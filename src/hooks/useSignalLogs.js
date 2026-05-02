@@ -6,7 +6,8 @@ export function useSignalLogs() {
   const [logs, setLogs] = useState(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) {
+      // Only seed on very first visit (key absent entirely)
+      if (stored === null) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(seedLocalLogs));
         return seedLocalLogs;
       }
@@ -16,6 +17,7 @@ export function useSignalLogs() {
     }
   });
 
+  // Keep localStorage in sync on every change
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
@@ -46,5 +48,11 @@ export function useSignalLogs() {
     setLogs((prev) => prev.filter((log) => log.id !== id));
   };
 
-  return { logs, addLog, updateLog, deleteLog };
+  // Hard reset — useful for dev/testing
+  const resetLogs = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setLogs(seedLocalLogs);
+  };
+
+  return { logs, addLog, updateLog, deleteLog, resetLogs };
 }
