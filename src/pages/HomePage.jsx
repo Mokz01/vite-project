@@ -3,11 +3,13 @@ import SignalCard from "../components/SignalCard";
 import LogForm from "../components/LogForm";
 import { useSignalLogs } from "../hooks/useSignalLogs";
 import { useNewsFeed } from "../hooks/useNewsFeed";
+import SourceModal from "../components/SourceModal";
 
 export default function HomePage() {
   const { logs, addLog, updateLog, deleteLog } = useSignalLogs();
   const { articles, loading, error } = useNewsFeed();
   const [editingEntry, setEditingEntry] = useState(null);
+  const [sourceModal, setSourceModal] = useState(null); // { url, title, source }
 
   const handleSave = (formData) => {
     if (editingEntry) {
@@ -25,6 +27,7 @@ export default function HomePage() {
   });
 
   return (
+    <>
     <main className="max-w-screen-xl mx-auto px-4 py-5">
       {/* Page header */}
       <div className="mb-5 flex items-end justify-between">
@@ -90,6 +93,23 @@ export default function HomePage() {
                   key={article.id}
                   {...article}
                   animDelay={i * 0.05}
+                  onViewSource={
+                    article.url
+                      ? () =>
+                          setSourceModal({
+                            url: article.url,
+                            title: article.title,
+                            source: article.source,
+                            summary: article.summary,
+                            description: article.description,
+                            status: article.status,
+                            urgency: article.urgency,
+                            region: article.region,
+                            category: article.category,
+                            date: article.date,
+                          })
+                      : undefined
+                  }
                 />
               ))}
             </div>
@@ -136,6 +156,23 @@ export default function HomePage() {
                   animDelay={i * 0.05}
                   onEdit={() => setEditingEntry(log)}
                   onDelete={() => deleteLog(log.id)}
+                  onViewSource={
+                    log.url
+                      ? () =>
+                          setSourceModal({
+                            url: log.url,
+                            title: log.title,
+                            source: log.source,
+                            summary: log.summary,
+                            description: log.description,
+                            status: log.status,
+                            urgency: log.urgency,
+                            region: log.region,
+                            category: log.category,
+                            date: log.date,
+                          })
+                      : undefined
+                  }
                 />
               ))}
             </div>
@@ -143,6 +180,24 @@ export default function HomePage() {
         </section>
       </div>
     </main>
+
+      {/* Source Modal */}
+      {sourceModal && (
+        <SourceModal
+          url={sourceModal.url}
+          title={sourceModal.title}
+          source={sourceModal.source}
+          summary={sourceModal.summary}
+          description={sourceModal.description}
+          status={sourceModal.status}
+          urgency={sourceModal.urgency}
+          region={sourceModal.region}
+          category={sourceModal.category}
+          date={sourceModal.date}
+          onClose={() => setSourceModal(null)}
+        />
+      )}
+    </>
   );
 }
 

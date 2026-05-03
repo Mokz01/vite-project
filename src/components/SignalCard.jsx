@@ -9,10 +9,12 @@ export default function SignalCard({
   urgency,
   summary,
   category,
+  url,
   highlighted = false,
   animDelay = 0,
   onEdit,
   onDelete,
+  onViewSource,
 }) {
   const statusCfg = theme.status[status] ?? theme.status.Pending;
   const urgencyCfg = urgency
@@ -98,11 +100,37 @@ export default function SignalCard({
         </div>
       </div>
 
-      <h3 className="text-sm font-semibold text-navy leading-snug mb-1.5">
+      <h3 className="text-sm font-semibold leading-snug mb-1.5">
         {highlighted && (
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-alert animate-pulse-dot mr-1.5 mb-0.5" />
         )}
-        {title}
+        {url && onViewSource ? (
+          <button
+            onClick={onViewSource}
+            className="group inline-flex items-start gap-1 text-left text-navy hover:text-teal transition-colors"
+          >
+            <span className="underline underline-offset-2 decoration-teal/30 group-hover:decoration-teal transition-colors">
+              {title}
+            </span>
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 12 12"
+              fill="none"
+              className="shrink-0 mt-0.5 opacity-40 group-hover:opacity-100 transition-opacity"
+            >
+              <path
+                d="M4.5 2H2a1 1 0 00-1 1v7a1 1 0 001 1h7a1 1 0 001-1V7.5M7 1h4v4M11 1L5.5 6.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        ) : (
+          <span className="text-navy">{title}</span>
+        )}
       </h3>
       {summary && (
         <p className="text-xs text-teal/80 leading-relaxed">{summary}</p>

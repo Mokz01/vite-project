@@ -7,6 +7,7 @@ const EMPTY_FORM = {
   urgency: "Medium",
   region: "",
   source: "",
+  sourceUrl: "",
 };
 
 export default function LogForm({ onSave, editingEntry, onCancelEdit }) {
@@ -21,6 +22,7 @@ export default function LogForm({ onSave, editingEntry, onCancelEdit }) {
         urgency: editingEntry.urgency ?? "Medium",
         region: editingEntry.region ?? "",
         source: editingEntry.source ?? "",
+        sourceUrl: editingEntry.url ?? "",
       });
     } else {
       setForm(EMPTY_FORM);
@@ -33,7 +35,7 @@ export default function LogForm({ onSave, editingEntry, onCancelEdit }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!form.title.trim()) return;
-    onSave({ ...form, summary: form.description });
+    onSave({ ...form, url: form.sourceUrl, summary: form.description });
     setForm(EMPTY_FORM);
   };
 
@@ -102,13 +104,26 @@ export default function LogForm({ onSave, editingEntry, onCancelEdit }) {
 
       <div>
         <label className="block text-xs font-medium text-teal mb-1">
-          Source
+          Source type
         </label>
         <input
           className="input-base"
-          placeholder="e.g. Field report, Trader interview"
+          placeholder="e.g. Field report, Trader interview, Personal observation"
           value={form.source}
           onChange={set("source")}
+        />
+      </div>
+
+      <div>
+        <label className="block text-xs font-medium text-teal mb-1">
+          Source URL
+        </label>
+        <input
+          className="input-base"
+          type="url"
+          placeholder="https://..."
+          value={form.sourceUrl}
+          onChange={set("sourceUrl")}
         />
       </div>
 
