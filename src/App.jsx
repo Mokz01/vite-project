@@ -3,6 +3,7 @@ import Navbar from "./components/Navbar";
 import HomePage from "./pages/HomePage";
 import ArchivePage from "./pages/ArchivePage";
 import DevelopersPage from "./pages/DevelopersPage";
+import SourceVerifierPage from "./pages/SourceVerifierPage";
 
 export default function App() {
   return (
@@ -13,6 +14,8 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/archive" element={<ArchivePage />} />
           <Route path="/dev" element={<DevelopersPage />} />
+          <Route path="/verify" element={<SourceVerifierPage />} />
+
         </Routes>
       </div>
     </BrowserRouter>
