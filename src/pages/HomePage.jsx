@@ -36,7 +36,6 @@ export default function HomePage() {
     setEditingEntry(null);
   };
 
-  // ── Apply filters to both panes ──
   const filteredGlobal = applyFilters(articles || []);
   const filteredLocal = applyFilters(logs);
 
@@ -49,7 +48,6 @@ export default function HomePage() {
   return (
     <>
       <main className="max-w-screen-xl mx-auto px-4 py-5">
-        {/* Page header */}
         <div className="mb-4 flex items-end justify-between">
           <div>
             <p className="section-header mb-0.5">Live dashboard</p>
@@ -63,7 +61,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ── Filter bar sits above both panes ── */}
         <FilterBar
           filters={filters}
           onFilterChange={handleFilterChange}
@@ -74,7 +71,6 @@ export default function HomePage() {
         />
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start overflow-visible">
-          {/* LEFT — Global Feed */}
           <section className="bg-offwhite-light rounded-2xl p-4 border border-offwhite-dark">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-teal tracking-wide">
@@ -94,14 +90,12 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Error banner */}
             {error && (
               <div className="mb-3 px-3 py-2 rounded-lg bg-alert/10 border border-alert/20 text-xs text-alert font-mono">
                 {error}
               </div>
             )}
 
-            {/* Loading skeleton */}
             {loading && (
               <div className="space-y-2.5">
                 {[1, 2, 3].map((n) => (
@@ -115,12 +109,10 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* No results state */}
             {!loading && filteredGlobal.length === 0 && (
               <EmptyState message="No global signals match your filters." />
             )}
 
-            {/* Live articles */}
             {!loading && filteredGlobal.length > 0 && (
               <div className="space-y-2.5 stagger">
                 {filteredGlobal.map((article, i) => (
@@ -151,7 +143,6 @@ export default function HomePage() {
             )}
           </section>
 
-          {/* RIGHT — Local Log */}
           <section className="bg-offwhite-light rounded-2xl p-4 border border-offwhite-dark">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-sm font-semibold text-teal tracking-wide">
@@ -171,7 +162,6 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Empty — no logs at all */}
             {logs.length === 0 && (
               <div className="flex flex-col items-center justify-center py-16 gap-3">
                 <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
@@ -185,12 +175,10 @@ export default function HomePage() {
               </div>
             )}
 
-            {/* Empty — logs exist but filtered out */}
             {logs.length > 0 && filteredLocal.length === 0 && (
               <EmptyState message="No local logs match your filters." />
             )}
 
-            {/* Log list */}
             {filteredLocal.length > 0 && (
               <div className="space-y-2.5 stagger">
                 {filteredLocal.map((log, i) => (
@@ -225,7 +213,6 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* ── Log Form Modal ── */}
       {logModalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -235,7 +222,6 @@ export default function HomePage() {
             className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in overflow-y-auto"
             style={{ maxHeight: "90vh" }}
           >
-            {/* Modal header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-offwhite-dark">
               <div>
                 <p className="section-header mb-0">Signal log</p>
@@ -254,7 +240,6 @@ export default function HomePage() {
               </button>
             </div>
 
-            {/* Modal body */}
             <div className="p-5">
               <LogForm
                 onSave={handleSave}
@@ -266,7 +251,6 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Source Modal */}
       {sourceModal && (
         <SourceModal
           url={sourceModal.url}
@@ -285,8 +269,6 @@ export default function HomePage() {
     </>
   );
 }
-
-// ── Helper components ──
 
 function EmptyState({ message }) {
   return (

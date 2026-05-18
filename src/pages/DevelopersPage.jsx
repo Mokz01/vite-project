@@ -1,7 +1,6 @@
 import ActionButton from "../components/ActionButton";
 import { theme } from "../theme";
 
-// ─── Tech stack ────────────────────────────────────────────────────────────
 const stack = [
   ["Vite 6",         "Build tool — fast HMR, ES modules"],
   ["React 18",       "UI library — functional components + hooks"],
@@ -10,7 +9,6 @@ const stack = [
   ["localStorage",   "Zero-backend persistence — useEffect synced"],
 ];
 
-// ─── Team ───────────────────────────────────────────────────────────────────
 const team = [
   {
     name:    "Abon, Heather Ryann",
@@ -50,7 +48,6 @@ const team = [
   },
 ];
 
-// ─── Sources ────────────────────────────────────────────────────────────────
 const sources = [
   {
     label:   "ACLED",
@@ -82,7 +79,6 @@ const sources = [
   },
 ];
 
-// ─── Icons (inline SVG helpers) ─────────────────────────────────────────────
 function IconLinkedIn() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
@@ -133,17 +129,14 @@ function IconArrow() {
   );
 }
 
-// ─── Sub-components ──────────────────────────────────────────────────────────
 function TeamCard({ member }) {
   return (
     <div className="card-base card-hover p-6 flex flex-col items-center text-center gap-3">
-      {/* Avatar */}
       <div className="w-20 h-20 rounded-full bg-navy flex items-center justify-center
                       text-offwhite font-display text-xl tracking-wide select-none">
         {member.initials}
       </div>
 
-      {/* Name + role */}
       <div>
         <p className="font-body font-semibold text-sm text-navy leading-snug">
           {member.name}
@@ -151,12 +144,10 @@ function TeamCard({ member }) {
         <p className="section-header mt-0.5">{member.role}</p>
       </div>
 
-      {/* Description */}
       <p className="text-xs text-teal/70 leading-relaxed">
         {member.desc}
       </p>
 
-      {/* Links */}
       <div className="flex items-center gap-2 mt-1">
         {[
           { href: member.linkedin, icon: <IconLinkedIn />, label: "LinkedIn" },
@@ -206,12 +197,10 @@ function SourceCard({ source }) {
   );
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────
 export default function DevelopersPage() {
   return (
     <main className="max-w-screen-xl mx-auto px-4 py-10 space-y-14">
 
-      {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="text-center space-y-3">
         <p className="section-header tracking-widest">The Peace &amp; Supply Signal</p>
         <h1 className="font-display text-4xl md:text-5xl text-navy leading-none uppercase">
@@ -223,7 +212,6 @@ export default function DevelopersPage() {
         </p>
       </section>
 
-      {/* ── Team cards ───────────────────────────────────────────────────── */}
       <section>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 stagger">
           {team.map((m) => (
@@ -234,7 +222,6 @@ export default function DevelopersPage() {
 
       <hr className="border-offwhite-dark" />
 
-      {/* ── Sources ──────────────────────────────────────────────────────── */}
       <section className="space-y-5">
         <div className="flex items-center gap-2">
           <span className="text-teal"><IconBook /></span>
@@ -244,75 +231,6 @@ export default function DevelopersPage() {
           {sources.map((s) => (
             <SourceCard key={s.label} source={s} />
           ))}
-        </div>
-      </section>
-
-      <hr className="border-offwhite-dark" />
-
-      {/* ── Architecture / design system (existing section) ──────────────── */}
-      <section>
-        <div className="mb-6">
-          <p className="section-header mb-0.5">Architecture reference</p>
-          <h2 className="font-display text-2xl text-navy leading-none">
-            Component Tree &amp; Design System
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          {/* Left column */}
-          <div className="space-y-4">
-            <p className="section-header">Design tokens — src/theme.js</p>
-            <div className="card-base p-4 space-y-3">
-              {Object.entries(theme.colors).map(([name, hex]) => (
-                <div key={name} className="flex items-center gap-3">
-                  <div
-                    className="w-8 h-8 rounded-md shrink-0 border border-offwhite-dark"
-                    style={{ background: hex }}
-                  />
-                  <p className="text-xs font-mono text-navy">
-                    {name} · {hex}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            <p className="section-header">ActionButton variants</p>
-            <div className="card-base p-4 flex flex-wrap gap-2">
-              <ActionButton variant="primary"   size="sm">Primary</ActionButton>
-              <ActionButton variant="secondary" size="sm">Secondary</ActionButton>
-              <ActionButton variant="danger"    size="sm">Danger</ActionButton>
-              <ActionButton variant="ghost"     size="sm">Ghost</ActionButton>
-              <ActionButton variant="primary"   size="md" disabled>Disabled</ActionButton>
-            </div>
-          </div>
-
-          {/* Right column */}
-          <div className="space-y-4">
-            <p className="section-header">Tech stack</p>
-            <div className="card-base p-4 space-y-2">
-              {stack.map(([tech, desc]) => (
-                <div key={tech} className="flex items-baseline justify-between gap-2">
-                  <span className="text-xs font-mono font-medium text-navy">{tech}</span>
-                  <span className="text-[11px] text-teal/60 text-right">{desc}</span>
-                </div>
-              ))}
-            </div>
-
-            <p className="section-header">Urgency + status tags</p>
-            <div className="card-base p-4 flex flex-wrap gap-2">
-              {Object.entries(theme.urgency).map(([level, cfg]) => (
-                <span key={level} className={`tag-base ${cfg.bg} ${cfg.text}`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
-                  {level}
-                </span>
-              ))}
-              {Object.entries(theme.status).map(([status, cfg]) => (
-                <span key={status} className={`tag-base ${cfg.bg} ${cfg.text}`}>
-                  {cfg.icon} {status}
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 

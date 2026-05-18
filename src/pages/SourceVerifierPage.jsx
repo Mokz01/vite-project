@@ -1,8 +1,6 @@
 import { useState } from "react";
 import ActionButton from "../components/ActionButton";
 
-// ─── Trusted source database ─────────────────────────────────────────────────
-
 const TRUSTED_SOURCES = [
   {
     domain: "acleddata.com",
@@ -255,8 +253,6 @@ const SOCIAL_DOMAINS = [
   "instagram.com",
 ];
 
-// ─── History hook ─────────────────────────────────────────────────────────────
-
 function useVerifierHistory() {
   const [history, setHistory] = useState(() => {
     try {
@@ -279,8 +275,6 @@ function useVerifierHistory() {
 
   return { history, addEntry, clearHistory };
 }
-
-// ─── Domain pattern scoring (Option 2) ───────────────────────────────────────
 
 function scoreDomainPattern(hostname) {
   if (hostname.endsWith(".gov.ph"))
@@ -308,8 +302,6 @@ function scoreDomainPattern(hostname) {
   return { trust: "Unknown", reason: null, autoScore: 40 };
 }
 
-// ─── Core logic ───────────────────────────────────────────────────────────────
-
 function analyzeUrl(rawUrl) {
   let url = rawUrl.trim();
   if (!url.startsWith("http")) url = "https://" + url;
@@ -321,7 +313,6 @@ function analyzeUrl(rawUrl) {
     return { error: "Invalid URL. Please enter a valid web address." };
   }
 
-  // 1 — Exact registry match
   const trusted = TRUSTED_SOURCES.find(
     (s) => hostname === s.domain || hostname.endsWith("." + s.domain)
   );
@@ -338,7 +329,6 @@ function analyzeUrl(rawUrl) {
     };
   }
 
-  // 2 — Known clickbait
   const isClickbait = CLICKBAIT_DOMAINS.some(
     (d) => hostname === d || hostname.endsWith("." + d)
   );
@@ -360,7 +350,6 @@ function analyzeUrl(rawUrl) {
     };
   }
 
-  // 3 — Social media
   const isSocial = SOCIAL_DOMAINS.some(
     (d) => hostname === d || hostname.endsWith("." + d)
   );
@@ -382,7 +371,6 @@ function analyzeUrl(rawUrl) {
     };
   }
 
-  // 4 — Smart domain pattern scoring
   const pattern = scoreDomainPattern(hostname);
 
   if (pattern.trust === "Low") {
@@ -421,7 +409,6 @@ function analyzeUrl(rawUrl) {
     };
   }
 
-  // 5 — Truly unknown: neutral + checklist
   return {
     hostname,
     status: "unknown",
@@ -438,8 +425,6 @@ function analyzeUrl(rawUrl) {
     showChecklist: true,
   };
 }
-
-// ─── Config maps ──────────────────────────────────────────────────────────────
 
 const STATUS_CONFIG = {
   trusted: {
@@ -483,8 +468,6 @@ const STATUS_CONFIG = {
     barColor: "bg-teal/30",
   },
 };
-
-// ─── Manual checklist component (Option 3) ────────────────────────────────────────────────
 
 const CHECKLIST_ITEMS = [
   { id: "about",   label: 'Has a visible "About Us" or "Who We Are" page' },
@@ -570,8 +553,6 @@ function ManualChecklist({ baseScore, hostname }) {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default function SourceVerifierPage() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState(null);
@@ -585,7 +566,6 @@ export default function SourceVerifierPage() {
     setLoading(true);
     setResult(null);
 
-    // Simulate brief analysis delay for effect
     setTimeout(() => {
       const analysis = analyzeUrl(input);
       if (analysis.error) {
@@ -621,7 +601,6 @@ export default function SourceVerifierPage() {
   return (
     <main className="max-w-screen-xl mx-auto px-4 py-5 space-y-5">
 
-      {/* ── Header ──────────────────────────────────────────────────────── */}
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
           <p className="section-header mb-0.5">Credibility check</p>
@@ -635,7 +614,6 @@ export default function SourceVerifierPage() {
         </p>
       </div>
 
-      {/* ── Input ───────────────────────────────────────────────────────── */}
       <div className="card-base p-5 space-y-3">
         <p className="section-header">Enter a URL to verify</p>
         <div className="flex gap-2 flex-wrap sm:flex-nowrap">
@@ -663,12 +641,10 @@ export default function SourceVerifierPage() {
         )}
       </div>
 
-      {/* ── Result ──────────────────────────────────────────────────────── */}
       {result && cfg && (
         <div
           className={`card-base border ${cfg.border} p-5 space-y-4 animate-fade-in`}
         >
-          {/* Verdict header */}
           <div className="flex items-start justify-between gap-3 flex-wrap">
             <div className="flex items-center gap-3">
               <div
@@ -690,7 +666,6 @@ export default function SourceVerifierPage() {
             </span>
           </div>
 
-          {/* Trust score bar */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center">
               <p className="section-header">Credibility score</p>
@@ -706,7 +681,6 @@ export default function SourceVerifierPage() {
             </div>
           </div>
 
-          {/* Trusted source details */}
           {result.source && (
             <div className="bg-offwhite-light rounded-xl p-4 space-y-2">
               <div className="flex items-center gap-2 flex-wrap">
@@ -733,7 +707,6 @@ export default function SourceVerifierPage() {
             </div>
           )}
 
-          {/* Warnings */}
           {result.warnings.length > 0 && (
             <div className="space-y-2">
               <p className="section-header">Assessment</p>
@@ -750,7 +723,6 @@ export default function SourceVerifierPage() {
             </div>
           )}
 
-          {/* Manual checklist for unknown/pattern sources */}
           {result.showChecklist && (
             <div className="border-t border-offwhite-dark pt-4">
               <ManualChecklist
@@ -760,7 +732,6 @@ export default function SourceVerifierPage() {
             </div>
           )}
 
-          {/* Recommended sources if flagged/caution/unknown */}
           {(result.status === "flagged" ||
             result.status === "unknown" ||
             result.status === "caution" ||
@@ -788,10 +759,8 @@ export default function SourceVerifierPage() {
         </div>
       )}
 
-      {/* ── Two-column: Trusted registry + History ───────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
 
-        {/* Trusted sources registry */}
         <div className="card-base p-5 space-y-3">
           <div>
             <p className="section-header mb-0.5">Our trusted sources registry</p>
@@ -840,7 +809,6 @@ export default function SourceVerifierPage() {
           </div>
         </div>
 
-        {/* Verification history */}
         <div className="card-base p-5 space-y-3">
           <div className="flex items-center justify-between">
             <div>
