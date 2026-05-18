@@ -86,7 +86,7 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
   };
 
   return (
-    <div className="w-full mb-4 animate-fade-in relative z-50">
+    <div className="w-full mb-4 animate-fade-in relative z-10">
       <div className="bg-white/70 backdrop-blur-sm border border-offwhite-dark rounded-2xl px-4 py-3 shadow-sm">
         {/* ── Top row: Search + Date + Reset ── */}
         <div className="flex flex-wrap items-center gap-2 mb-3">
