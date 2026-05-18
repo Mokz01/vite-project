@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 const CACHE_KEY = "pss_news_cache";
 const CACHE_TTL = 1000 * 60 * 60; // 1 hour
 
-// Simplified Mapping to match your UI
 function mapArticle(article, index) {
   return {
     id: `news-${index}-${Date.now()}`,
@@ -27,18 +26,17 @@ export function useNewsFeed() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_NEWS_API_KEY;
+    const apiKey = import.meta.env.VITE_GNEWS_API_KEY;
 
     async function fetchNews() {
       try {
         setLoading(true);
 
-        // 1. Check if Key exists
         if (!apiKey || apiKey.length < 10) {
-          throw new Error("Missing API Key in .env");
+          throw new Error("Missing VITE_GNEWS_API_KEY in .env");
         }
 
-        // 2. Try Cache first
+        // Try cache first
         const cached = localStorage.getItem(CACHE_KEY);
         if (cached) {
           const { timestamp, data } = JSON.parse(cached);
@@ -49,29 +47,33 @@ export function useNewsFeed() {
           }
         }
 
-        // 3. Real Fetch (Using Top Headlines for better localhost support)
-        const url = `https://newsapi.org/v2/top-headlines?category=business&q=oil+OR+trade+OR+supply&language=en&apiKey=${apiKey}`;
+        // GNews API — works from the browser, no CORS issues
+        const url = `https://gnews.io/api/v4/search?q=trade+OR+supply+OR+oil+OR+conflict&lang=en&max=6&apikey=${apiKey}`;
 
         const response = await fetch(url);
         const json = await response.json();
 
-        if (json.status !== "ok") {
-          throw new Error(json.message || "API returned an error");
+        if (!response.ok || json.errors) {
+          throw new Error(
+            (json.errors && json.errors[0]) || `HTTP ${response.status}`
+          );
         }
 
-        const news = json.articles.slice(0, 6).map(mapArticle);
+        if (!json.articles || json.articles.length === 0) {
+          throw new Error("No articles returned from GNews");
+        }
 
-        if (news.length === 0) throw new Error("No matching news found");
+        const news = json.articles.map(mapArticle);
 
         setArticles(news);
         localStorage.setItem(
           CACHE_KEY,
-          JSON.stringify({ timestamp: Date.now(), data: news }),
+          JSON.stringify({ timestamp: Date.now(), data: news })
         );
       } catch (err) {
         console.error("News Feed Error:", err.message);
         setError(err.message);
-        setArticles(getFallbackArticles()); // Fallback if API fails
+        setArticles(getFallbackArticles());
       } finally {
         setLoading(false);
       }
