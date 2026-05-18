@@ -6,6 +6,7 @@ import { useSignalLogs } from "../hooks/useSignalLogs";
 import { useNewsFeed } from "../hooks/useNewsFeed";
 import { useFilters } from "../hooks/useFilters";
 import SourceModal from "../components/SourceModal";
+import ActionButton from "../components/ActionButton";
 
 export default function HomePage() {
   const { logs, addLog, updateLog, deleteLog } = useSignalLogs();
@@ -13,6 +14,7 @@ export default function HomePage() {
   const { filters, handleFilterChange, applyFilters } = useFilters();
   const [editingEntry, setEditingEntry] = useState(null);
   const [sourceModal, setSourceModal] = useState(null);
+  const [logModalOpen, setLogModalOpen] = useState(false);
 
   const handleSave = (formData) => {
     if (editingEntry) {
@@ -21,6 +23,17 @@ export default function HomePage() {
     } else {
       addLog(formData);
     }
+    setLogModalOpen(false);
+  };
+
+  const handleEdit = (log) => {
+    setEditingEntry(log);
+    setLogModalOpen(true);
+  };
+
+  const handleCloseLogModal = () => {
+    setLogModalOpen(false);
+    setEditingEntry(null);
   };
 
   // ── Apply filters to both panes ──
@@ -92,10 +105,7 @@ export default function HomePage() {
             {loading && (
               <div className="space-y-2.5">
                 {[1, 2, 3].map((n) => (
-                  <div
-                    key={n}
-                    className="card-base p-4 space-y-2 animate-pulse"
-                  >
+                  <div key={n} className="card-base p-4 space-y-2 animate-pulse">
                     <div className="h-3 bg-offwhite-dark rounded w-1/3" />
                     <div className="h-4 bg-offwhite-dark rounded w-4/5" />
                     <div className="h-3 bg-offwhite-dark rounded w-full" />
@@ -147,31 +157,31 @@ export default function HomePage() {
               <h2 className="text-sm font-semibold text-teal tracking-wide">
                 My local impact log
               </h2>
-              <span className="text-[11px] font-mono text-teal/50">
-                {filteredLocal.length} of {logs.length} entries · saved
-              </span>
-            </div>
-
-            <div className="mb-4">
-              <LogForm
-                onSave={handleSave}
-                editingEntry={editingEntry}
-                onCancelEdit={() => setEditingEntry(null)}
-              />
-            </div>
-
-            <div className="flex items-center gap-2 mb-3">
-              <span className="h-px flex-1 bg-offwhite-dark" />
-              <span className="text-[10px] font-mono text-teal/40 uppercase tracking-widest">
-                Saved logs
-              </span>
-              <span className="h-px flex-1 bg-offwhite-dark" />
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-mono text-teal/50">
+                  {filteredLocal.length} of {logs.length} entries · saved
+                </span>
+                <ActionButton
+                  variant="primary"
+                  size="sm"
+                  onClick={() => { setEditingEntry(null); setLogModalOpen(true); }}
+                >
+                  + New log
+                </ActionButton>
+              </div>
             </div>
 
             {/* Empty — no logs at all */}
             {logs.length === 0 && (
-              <div className="text-center py-10 text-xs font-mono text-teal/40">
-                No entries yet — add your first signal log above.
+              <div className="flex flex-col items-center justify-center py-16 gap-3">
+                <div className="w-10 h-10 rounded-full bg-navy/5 flex items-center justify-center">
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <path d="M9 4v10M4 9h10" stroke="#415A77" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <p className="text-xs font-mono text-teal/40 text-center">
+                  No entries yet — click <span className="text-navy font-medium">+ New log</span> to add your first signal.
+                </p>
               </div>
             )}
 
@@ -188,7 +198,7 @@ export default function HomePage() {
                     key={log.id}
                     {...log}
                     animDelay={i * 0.05}
-                    onEdit={() => setEditingEntry(log)}
+                    onEdit={() => handleEdit(log)}
                     onDelete={() => deleteLog(log.id)}
                     onViewSource={
                       log.url
@@ -215,7 +225,48 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* Source Modal — unchanged from your original */}
+      {/* ── Log Form Modal ── */}
+      {logModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ backgroundColor: "rgba(13, 27, 42, 0.6)", backdropFilter: "blur(4px)" }}
+        >
+          <div
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in overflow-y-auto"
+            style={{ maxHeight: "90vh" }}
+          >
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-offwhite-dark">
+              <div>
+                <p className="section-header mb-0">Signal log</p>
+                <p className="text-[11px] font-mono text-teal/40">
+                  {editingEntry ? "Editing entry" : "New local impact entry"}
+                </p>
+              </div>
+              <button
+                onClick={handleCloseLogModal}
+                className="w-7 h-7 rounded-full flex items-center justify-center
+                           text-teal/40 hover:text-teal hover:bg-offwhite transition-colors"
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <path d="M2 2l10 10M12 2L2 12" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal body */}
+            <div className="p-5">
+              <LogForm
+                onSave={handleSave}
+                editingEntry={editingEntry}
+                onCancelEdit={handleCloseLogModal}
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Source Modal */}
       {sourceModal && (
         <SourceModal
           url={sourceModal.url}
@@ -240,26 +291,9 @@ export default function HomePage() {
 function EmptyState({ message }) {
   return (
     <div className="flex flex-col items-center justify-center py-10 gap-2">
-      <svg
-        width="28"
-        height="28"
-        viewBox="0 0 28 28"
-        fill="none"
-        className="text-teal/20"
-      >
-        <circle
-          cx="14"
-          cy="14"
-          r="12"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
-        <path
-          d="M9 14h10M14 9v10"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className="text-teal/20">
+        <circle cx="14" cy="14" r="12" stroke="currentColor" strokeWidth="1.5" />
+        <path d="M9 14h10M14 9v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
       <p className="text-xs font-mono text-teal/40 text-center">{message}</p>
     </div>
@@ -268,23 +302,9 @@ function EmptyState({ message }) {
 
 function Spinner() {
   return (
-    <svg
-      className="animate-spin"
-      width="12"
-      height="12"
-      viewBox="0 0 12 12"
-      fill="none"
-    >
-      <circle
-        cx="6"
-        cy="6"
-        r="4.5"
-        stroke="#415A77"
-        strokeWidth="1.5"
-        strokeDasharray="20"
-        strokeDashoffset="10"
-        strokeLinecap="round"
-      />
+    <svg className="animate-spin" width="12" height="12" viewBox="0 0 12 12" fill="none">
+      <circle cx="6" cy="6" r="4.5" stroke="#415A77" strokeWidth="1.5"
+        strokeDasharray="20" strokeDashoffset="10" strokeLinecap="round" />
     </svg>
   );
 }
