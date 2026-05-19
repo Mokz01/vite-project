@@ -379,6 +379,12 @@ export default function SourceVerifierPage() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError]   = useState("");
+  const [sourcesExpanded, setSourcesExpanded] = useState(false);
+const PREVIEW_COUNT = 5;
+const visibleSources = sourcesExpanded
+  ? TRUSTED_SOURCES
+  : TRUSTED_SOURCES.slice(0, PREVIEW_COUNT);
+  
 
   const { history, addEntry, clearHistory } = useVerifierHistory();
   const { entries, addEntry: addFCEntry, updateEntry, deleteEntry } = useFactCheckLog();
@@ -526,28 +532,41 @@ export default function SourceVerifierPage() {
 
         {/* Trusted sources registry */}
         <div className="card-base p-5 space-y-3">
-          <div>
-            <p className="section-header mb-0.5">Our trusted sources registry</p>
-            <p className="text-[11px] font-mono text-teal/40">{TRUSTED_SOURCES.length} verified sources</p>
-          </div>
-          <div className="space-y-2">
-            {TRUSTED_SOURCES.map((s) => (
-              <div key={s.domain} className="flex items-center justify-between gap-2 py-2 border-b border-offwhite-dark last:border-0">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.trust === "High" ? "bg-jade" : "bg-amber-400"}`} />
-                  <div className="min-w-0">
-                    <p className="text-xs font-medium text-navy truncate">{s.name}</p>
-                    <p className="text-[11px] font-mono text-teal/40 truncate">{s.domain}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <span className="tag-base bg-navy/5 text-navy text-[10px]">{s.category}</span>
-                  <span className={`tag-base text-[10px] ${s.trust === "High" ? "bg-jade/10 text-jade" : "bg-amber-50 text-amber-700"}`}>{s.trust}</span>
-                </div>
-              </div>
-            ))}
+  <div className="flex items-center justify-between">
+    <div>
+      <p className="section-header mb-0.5">Our trusted sources registry</p>
+      <p className="text-[11px] font-mono text-teal/40">{TRUSTED_SOURCES.length} verified sources</p>
+    </div>
+    <ActionButton variant="ghost" size="sm" onClick={() => setSourcesExpanded(v => !v)}>
+      {sourcesExpanded ? "Show less ↑" : `Show all ${TRUSTED_SOURCES.length} ↓`}
+    </ActionButton>
+  </div>
+  <div className="space-y-2">
+    {visibleSources.map((s) => (
+      <div key={s.domain} className="flex items-center justify-between gap-2 py-2 border-b border-offwhite-dark last:border-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${s.trust === "High" ? "bg-jade" : "bg-amber-400"}`} />
+          <div className="min-w-0">
+            <p className="text-xs font-medium text-navy truncate">{s.name}</p>
+            <p className="text-[11px] font-mono text-teal/40 truncate">{s.domain}</p>
           </div>
         </div>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <span className="tag-base bg-navy/5 text-navy text-[10px]">{s.category}</span>
+          <span className={`tag-base text-[10px] ${s.trust === "High" ? "bg-jade/10 text-jade" : "bg-amber-50 text-amber-700"}`}>{s.trust}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+    {!sourcesExpanded && (
+      <button
+        onClick={() => setSourcesExpanded(true)}
+        className="w-full text-center text-[11px] font-mono text-teal/40 hover:text-teal py-1 transition-colors"
+      >
+        + {TRUSTED_SOURCES.length - PREVIEW_COUNT} more sources…
+      </button>
+    )}
+  </div>
 
         {/* Recent verifications */}
         <div className="card-base p-5 space-y-3">

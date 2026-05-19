@@ -39,13 +39,6 @@ const CATEGORY_CONFIG = [
   { value: "Metals", label: "Metals", icon: "🏭" },
 ];
 
-/**
- * <FilterBar />
- * Props:
- *   filters        — the current filters object from parent state
- *   onFilterChange — handler function: (key, value) => void
- *   resultCount    — { global: number, local: number } to show live counts
- */
 export default function FilterBar({ filters, onFilterChange, resultCount }) {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const dropdownRef = useRef(null);
