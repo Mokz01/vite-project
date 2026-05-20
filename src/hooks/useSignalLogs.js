@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { STORAGE_KEY } from "../theme";
-import { seedLocalLogs } from "../data/signals";
 
 export function useSignalLogs() {
   const [logs, setLogs] = useState(() => {
@@ -8,12 +7,12 @@ export function useSignalLogs() {
       const stored = localStorage.getItem(STORAGE_KEY);
       // Only seed on very first visit (key absent entirely)
       if (stored === null) {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(seedLocalLogs));
-        return seedLocalLogs;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+        return [];
       }
       return JSON.parse(stored);
     } catch {
-      return seedLocalLogs;
+      return [];
     }
   });
 
@@ -51,7 +50,7 @@ export function useSignalLogs() {
   // Hard reset — useful for dev/testing
   const resetLogs = () => {
     localStorage.removeItem(STORAGE_KEY);
-    setLogs(seedLocalLogs);
+    setLogs([]);
   };
 
   return { logs, addLog, updateLog, deleteLog, resetLogs };
