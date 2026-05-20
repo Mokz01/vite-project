@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ActionButton from "../components/ActionButton";
-import { globalSignals } from "../data/signals";
 import { useSignalLogs } from "../hooks/useSignalLogs";
 import { theme } from "../theme";
 
