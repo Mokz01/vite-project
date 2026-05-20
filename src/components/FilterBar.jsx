@@ -1,7 +1,5 @@
 import { useState, useRef, useEffect } from "react";
 
-// ── Config arrays — add/remove filters here without touching JSX ──
-
 const URGENCY_CONFIG = [
   {
     value: "High",
@@ -43,7 +41,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
   const [categoryOpen, setCategoryOpen] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Close category dropdown on outside click
   useEffect(() => {
     function handleClickOutside(e) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -70,7 +67,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
   };
 
   const handleUrgencyToggle = (value) => {
-    // Clicking active urgency deselects it (toggle off)
     onFilterChange("urgency", filters.urgency === value ? "all" : value);
   };
 
@@ -81,9 +77,7 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
   return (
     <div className="w-full mb-4 animate-fade-in relative z-10">
       <div className="bg-white/70 backdrop-blur-sm border border-offwhite-dark rounded-2xl px-4 py-3 shadow-sm">
-        {/* ── Top row: Search + Date + Reset ── */}
         <div className="flex flex-wrap items-center gap-2 mb-3">
-          {/* Search bar */}
           <div className="relative flex-1 min-w-[200px]">
             <SearchIcon />
             <input
@@ -109,7 +103,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
             )}
           </div>
 
-          {/* Date range dropdown */}
           <select
             value={filters.dateRange}
             onChange={(e) => onFilterChange("dateRange", e.target.value)}
@@ -127,7 +120,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
             ))}
           </select>
 
-          {/* Active filter count badge + Reset */}
           {activeFilterCount > 0 && (
             <button
               onClick={handleReset}
@@ -138,7 +130,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
             </button>
           )}
 
-          {/* Result count */}
           {resultCount && (
             <div className="ml-auto flex items-center gap-3 text-[11px] font-mono text-teal/50 shrink-0">
               <span>
@@ -158,14 +149,11 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
           )}
         </div>
 
-        {/* ── Bottom row: Urgency toggles + Category multi-select ── */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Urgency label */}
           <span className="text-[10px] font-mono font-medium text-teal/50 uppercase tracking-widest shrink-0">
             Urgency
           </span>
 
-          {/* Urgency toggle buttons — rendered via .map() */}
           {URGENCY_CONFIG.map(({ value, label, dot, active }) => {
             const isActive = filters.urgency === value;
             return (
@@ -190,10 +178,8 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
             );
           })}
 
-          {/* Divider */}
           <span className="w-px h-4 bg-offwhite-dark mx-1 shrink-0" />
 
-          {/* Category multi-select dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setCategoryOpen((o) => !o)}
@@ -217,7 +203,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
               <ChevronIcon open={categoryOpen} />
             </button>
 
-            {/* Dropdown panel */}
             {categoryOpen && (
               <div
                 className="
@@ -226,7 +211,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
                      p-2 min-w-[160px] animate-fade-in
                     "
               >
-                {/* Category options — rendered via .map() */}
                 {CATEGORY_CONFIG.map(({ value, label, icon }) => {
                   const isSelected = filters.categories.includes(value);
                   return (
@@ -250,7 +234,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
                   );
                 })}
 
-                {/* Clear categories */}
                 {filters.categories.length > 0 && (
                   <>
                     <div className="h-px bg-offwhite-dark my-1.5" />
@@ -266,7 +249,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
             )}
           </div>
 
-          {/* Active category chips */}
           {filters.categories.map((cat) => {
             const cfg = CATEGORY_CONFIG.find((c) => c.value === cat);
             return (
@@ -289,8 +271,6 @@ export default function FilterBar({ filters, onFilterChange, resultCount }) {
     </div>
   );
 }
-
-// ── Inline SVG icon components ──
 
 function SearchIcon() {
   return (

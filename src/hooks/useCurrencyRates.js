@@ -1,11 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 
-// Free API — no key required, CORS-friendly
 const BASE_CURRENCY = "PHP";
 const CACHE_KEY = "pss_fx_cache";
-const CACHE_TTL = 1000 * 60 * 15; // 15 minutes
+const CACHE_TTL = 1000 * 60 * 15;
 
-// Currencies to display in the navbar ticker
 export const TRACKED_PAIRS = [
   { from: "USD", to: "PHP", label: "USD/PHP" },
   { from: "EUR", to: "PHP", label: "EUR/PHP" },
@@ -18,14 +16,13 @@ export const TRACKED_PAIRS = [
 ];
 
 function formatRate(from, rate) {
-  // KRW/JPY — show more decimal places due to small unit value
   if (from === "KRW") return rate.toFixed(4);
   if (from === "JPY") return rate.toFixed(3);
   return rate.toFixed(2);
 }
 
 export function useCurrencyRates() {
-  const [rates, setRates] = useState(null); // { USD: 56.5, EUR: 61.2, ... } keyed by foreign currency
+  const [rates, setRates] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -36,7 +33,6 @@ export function useCurrencyRates() {
       try {
         setLoading(true);
 
-        // 1. Try cache
         const cached = localStorage.getItem(CACHE_KEY);
         if (cached) {
           const { timestamp, data } = JSON.parse(cached);
@@ -48,8 +44,6 @@ export function useCurrencyRates() {
           }
         }
 
-        // 2. Fetch from frankfurter.app — free, no key, reliable
-        // Base = PHP, get all tracked currencies
         const symbols = TRACKED_PAIRS.map((p) => p.from).join(",");
         const res = await fetch(
           `https://api.frankfurter.app/latest?from=${BASE_CURRENCY}&to=${symbols}`
@@ -58,8 +52,6 @@ export function useCurrencyRates() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
 
-        // json.rates = { USD: 0.01768, EUR: 0.01623, ... } (1 PHP = X foreign)
-        // We want: 1 FOREIGN = X PHP, so invert
         const inverted = {};
         for (const [currency, phpPerForeign] of Object.entries(json.rates)) {
           inverted[currency] = 1 / phpPerForeign;
@@ -75,7 +67,6 @@ export function useCurrencyRates() {
       } catch (err) {
         console.error("FX fetch error:", err.message);
         setError(err.message);
-        // Fallback hardcoded rates (approximate, as of mid-2025)
         setRates({
           USD: 56.5,
           EUR: 61.8,
@@ -93,12 +84,10 @@ export function useCurrencyRates() {
 
     fetchRates();
 
-    // Refresh every 15 minutes
     const interval = setInterval(fetchRates, CACHE_TTL);
     return () => clearInterval(interval);
   }, []);
 
-  // Build display pairs with trend vs previous fetch
   const pairs = rates
     ? TRACKED_PAIRS.map(({ from, label }) => {
         const rate = rates[from];
@@ -114,7 +103,6 @@ export function useCurrencyRates() {
       })
     : [];
 
-  // Update prev after computing trends
   useEffect(() => {
     if (rates) prevRatesRef.current = { ...rates };
   }, [rates]);

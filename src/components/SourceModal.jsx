@@ -26,7 +26,6 @@ export default function SourceModal({
       })
     : null;
 
-  // Extract a clean domain label from the URL
   let domain = null;
   try {
     domain = new URL(url).hostname.replace(/^www\./, "");
@@ -56,7 +55,6 @@ export default function SourceModal({
         style={{ height: "82vh", backgroundColor: "#ffffff", boxShadow: "0 24px 60px rgba(0,0,0,0.25)" }}
       >
 
-        {/* HEADER BAR */}
         <div className="flex items-center justify-between px-5 py-3.5 border-b border-gray-100 shrink-0">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-jade" />
@@ -75,11 +73,9 @@ export default function SourceModal({
           </button>
         </div>
 
-        {/* META STRIP */}
         <div className="px-5 py-3 border-b border-gray-100 shrink-0 bg-gray-50/60">
           <div className="flex items-center justify-between gap-3 mb-2.5">
             <div className="flex items-center gap-2 flex-wrap">
-              {/* Domain pill */}
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-full border border-gray-200 text-[11px] font-mono text-teal/70 bg-white">
                 <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
                   <path d="M5 .5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zM.5 5h9M5 .5C3.5 2 2.5 3.4 2.5 5S3.5 8 5 9.5M5 .5C6.5 2 7.5 3.4 7.5 5S6.5 8 5 9.5" stroke="currentColor" strokeWidth="0.9" strokeLinecap="round" />
@@ -87,7 +83,6 @@ export default function SourceModal({
                 {domain}
               </span>
 
-              {/* Status badge */}
               {statusCfg && (
                 <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-medium ${statusCfg.bg} ${statusCfg.text} border-current/20`}>
                   <span className="text-[10px]">{statusCfg.icon}</span>
@@ -95,7 +90,6 @@ export default function SourceModal({
                 </span>
               )}
 
-              {/* Urgency badge */}
               {urgencyCfg && (
                 <span className={`flex items-center gap-1 px-2 py-0.5 rounded-full border text-[11px] font-medium ${urgencyCfg.bg} ${urgencyCfg.text} ${urgencyCfg.border}`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${urgencyCfg.dot}`} />
@@ -103,19 +97,16 @@ export default function SourceModal({
                 </span>
               )}
 
-              {/* Category */}
               {category && (
                 <span className="px-2 py-0.5 rounded-full border border-teal/20 text-[11px] font-medium bg-teal/5 text-teal">
                   {category}
                 </span>
               )}
 
-              {/* Source type */}
               {source && (
                 <span className="text-[11px] font-mono text-teal/50">{source}</span>
               )}
 
-              {/* Region */}
               {region && (
                 <span className="flex items-center gap-1 text-[11px] font-mono text-teal/50">
                   <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
@@ -127,18 +118,15 @@ export default function SourceModal({
               )}
             </div>
 
-            {/* Date */}
             {formattedDate && (
               <span className="text-[11px] font-mono text-teal/40 shrink-0">{formattedDate}</span>
             )}
           </div>
 
-          {/* Title */}
           <h2 className="text-sm font-semibold text-navy leading-snug">
             {title}
           </h2>
 
-          {/* Description */}
           {text && (
             <p className="text-xs text-teal/70 leading-relaxed mt-1.5">
               {text}
@@ -146,7 +134,6 @@ export default function SourceModal({
           )}
         </div>
 
-        {/* IFRAME */}
         <div className="flex-1 relative bg-gray-50">
           <iframe
             src={url}
@@ -155,7 +142,6 @@ export default function SourceModal({
             sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
             referrerPolicy="no-referrer"
           />
-          {/* Sits behind iframe — visible only when iframe fails to load */}
           <div
             className="absolute inset-0 flex flex-col items-center justify-center gap-3 pointer-events-none"
             style={{ zIndex: -1 }}
@@ -171,7 +157,6 @@ export default function SourceModal({
           </div>
         </div>
 
-        {/* FOOTER */}
         <div className="flex items-center justify-between px-5 py-3 border-t border-gray-100 shrink-0 bg-white">
           <p className="text-[10px] font-mono text-teal/40 truncate max-w-xs">{url}</p>
           <a

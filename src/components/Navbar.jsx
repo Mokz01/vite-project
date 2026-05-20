@@ -34,7 +34,6 @@ export default function Navbar() {
   const [activeIdx, setActiveIdx] = useState(0);
   const [fading, setFading] = useState(false);
 
-  // Auto-cycle through currencies every 3 seconds
   useEffect(() => {
     if (pairs.length === 0) return;
     const id = setInterval(() => {
@@ -53,7 +52,6 @@ export default function Navbar() {
     <header className="bg-navy sticky top-0 z-50 border-b border-white/5">
       <div className="max-w-screen-xl mx-auto px-5 h-12 flex items-center justify-between gap-4">
 
-        {/* Logo */}
         <div className="flex items-center gap-2.5 shrink-0">
           <div className="w-7 h-7 bg-teal rounded-md flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -67,7 +65,6 @@ export default function Navbar() {
           </span>
         </div>
 
-        {/* Nav links */}
         <nav className="flex items-center gap-1">
           {NAV_LINKS.map(({ to, label }) => (
             <NavLink
@@ -87,7 +84,6 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Currency ticker */}
         <div
           className="flex items-center gap-2 bg-white/5 border border-white/10 rounded px-3 py-1 shrink-0 min-w-[148px]"
           title={lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString("en-PH")}` : "Fetching rates…"}
@@ -101,21 +97,16 @@ export default function Navbar() {
               className="flex items-center gap-1.5 w-full transition-opacity duration-200"
               style={{ opacity: fading ? 0 : 1 }}
             >
-              {/* Pair label */}
               <span className="text-offwhite/50 text-[10px] font-mono shrink-0">
                 {current.label}
               </span>
               <span className="text-white/20 text-[10px] shrink-0">·</span>
-              {/* Rate */}
               <span className="text-offwhite text-[11px] font-mono font-medium flex-1">
                 {"\u20B1"}{current.rate}
               </span>
-              {/* Trend arrow */}
               <TrendArrow trend={current.trend} />
             </div>
           )}
-
-
         </div>
 
       </div>

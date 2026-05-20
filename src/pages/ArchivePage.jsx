@@ -1,14 +1,16 @@
 import { useState } from "react";
 import ActionButton from "../components/ActionButton";
+import { useNewsFeed } from "../hooks/useNewsFeed";
 import { useSignalLogs } from "../hooks/useSignalLogs";
 import { theme } from "../theme";
 
 export default function ArchivePage() {
   const { logs, deleteLog } = useSignalLogs();
+  const { articles } = useNewsFeed();   
   const [filter, setFilter] = useState("All");
 
   const allEntries = [
-    ...globalSignals.map((s) => ({ ...s, urgency: null })),
+    ...(articles || []).map((s) => ({ ...s, urgency: null })),
     ...logs,
   ];
 

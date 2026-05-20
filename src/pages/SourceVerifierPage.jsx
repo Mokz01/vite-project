@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import ActionButton from "../components/ActionButton";
 
-// ─── Fact-Check Log Hook ────────────────────────────────────────────────────
-
 const FCL_KEY = "pss_factcheck_log";
 
 function useFactCheckLog() {
@@ -46,8 +44,6 @@ function useFactCheckLog() {
 
   return { entries, addEntry, updateEntry, deleteEntry };
 }
-
-// ─── Trusted Sources & Detection Logic ─────────────────────────────────────
 
 const TRUSTED_SOURCES = [
   { domain: "acleddata.com",      name: "ACLED",        fullName: "Armed Conflict Location & Event Data",                 category: "Data",           trust: "High",     description: "Real-time data on political violence and protest events worldwide. Peer-reviewed methodology.", url: "https://acleddata.com" },
@@ -112,8 +108,6 @@ function analyzeUrl(rawUrl) {
   return { hostname, status: "unknown", trust: "Unknown", source: null, warnings: ["This domain is not in our registry and has no recognized domain pattern.", "We cannot confirm or deny the credibility of this source.", "Use the checklist below to manually assess before sharing."], verdict: "Unverified — Proceed with Caution", autoScore: 40, showChecklist: true };
 }
 
-// ─── Config ─────────────────────────────────────────────────────────────────
-
 const STATUS_CONFIG = {
   trusted: { bg: "bg-jade/10",        text: "text-jade",      border: "border-jade/30",       dot: "bg-jade",      icon: "✓", barColor: "bg-jade" },
   pattern: { bg: "bg-teal/10",        text: "text-teal",      border: "border-teal/30",       dot: "bg-teal",      icon: "~", barColor: "bg-teal" },
@@ -122,7 +116,6 @@ const STATUS_CONFIG = {
   unknown: { bg: "bg-offwhite-dark",  text: "text-teal/60",   border: "border-offwhite-dark", dot: "bg-teal/30",   icon: "?", barColor: "bg-teal/30" },
 };
 
-// Fact-check verdict config — matches paper: Verified / Misleading / False / Unverified
 const VERDICT_CONFIG = {
   Verified:    { bg: "bg-jade/10",   text: "text-jade",      icon: "✓", dot: "bg-jade" },
   Misleading:  { bg: "bg-gold/10",   text: "text-gold-dark", icon: "⚠", dot: "bg-gold" },
@@ -139,8 +132,6 @@ const CHECKLIST_ITEMS = [
   { id: "dated",   label: "Articles have clear publication dates" },
   { id: "contact", label: "Site has a working contact or corrections email" },
 ];
-
-// ─── ManualChecklist ────────────────────────────────────────────────────────
 
 function ManualChecklist({ baseScore, hostname }) {
   const [checked, setChecked] = useState({});
@@ -174,9 +165,6 @@ function ManualChecklist({ baseScore, hostname }) {
     </div>
   );
 }
-
-// ─── SaveFindingForm (NEW) ──────────────────────────────────────────────────
-// Appears after a verification. Lets user log the claim, notes, and verdict.
 
 const EMPTY_SAVE = { claim: "", notes: "", verdict: "Unverified" };
 
@@ -252,9 +240,6 @@ function SaveFindingForm({ url, hostname, analysisVerdict, onSave }) {
     </div>
   );
 }
-
-// ─── FactCheckLog (NEW) ─────────────────────────────────────────────────────
-// Full CRUD table for saved fact-check entries.
 
 function FactCheckLog({ entries, onUpdate, onDelete }) {
   const [editingId, setEditingId] = useState(null);
@@ -358,8 +343,6 @@ function FactCheckLog({ entries, onUpdate, onDelete }) {
   );
 }
 
-// ─── Main Page ───────────────────────────────────────────────────────────────
-
 function useVerifierHistory() {
   const [history, setHistory] = useState(() => {
     try { return JSON.parse(localStorage.getItem("verifierHistory") || "[]"); }
@@ -411,7 +394,6 @@ const visibleSources = sourcesExpanded
 
   const handleSaveFinding = (finding) => {
     addFCEntry(finding);
-    // Scroll to archive
     document.getElementById("factcheck-archive")?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -422,7 +404,6 @@ const visibleSources = sourcesExpanded
   return (
     <main className="max-w-screen-xl mx-auto px-4 py-5 space-y-5">
 
-      {/* Header */}
       <div className="flex items-end justify-between flex-wrap gap-3">
         <div>
           <p className="section-header mb-0.5">Credibility check</p>
@@ -433,7 +414,6 @@ const visibleSources = sourcesExpanded
         </p>
       </div>
 
-      {/* URL input */}
       <div className="card-base p-5 space-y-3">
         <p className="section-header">Enter a URL to verify</p>
         <div className="flex gap-2 flex-wrap sm:flex-nowrap">
@@ -452,7 +432,6 @@ const visibleSources = sourcesExpanded
         {error && <p className="text-xs font-mono text-alert">{error}</p>}
       </div>
 
-      {/* Verification result */}
       {result && cfg && (
         <div className={`card-base border ${cfg.border} p-5 space-y-4 animate-fade-in`}>
           <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -517,7 +496,6 @@ const visibleSources = sourcesExpanded
             </div>
           )}
 
-          {/* ── NEW: Save Finding Form ── */}
           <SaveFindingForm
             url={input.trim()}
             hostname={result.hostname}
@@ -527,10 +505,8 @@ const visibleSources = sourcesExpanded
         </div>
       )}
 
-      {/* Bottom two-column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
 
-        {/* Trusted sources registry */}
         <div className="card-base p-5 space-y-3">
   <div className="flex items-center justify-between">
     <div>
@@ -568,7 +544,6 @@ const visibleSources = sourcesExpanded
     )}
   </div>
 
-        {/* Recent verifications */}
         <div className="card-base p-5 space-y-3">
           <div className="flex items-center justify-between">
             <div>
@@ -601,7 +576,6 @@ const visibleSources = sourcesExpanded
         </div>
       </div>
 
-      {/* ── NEW: Fact-Check Archive ── */}
       <div id="factcheck-archive" className="card-base p-5 space-y-4">
         <div className="flex items-end justify-between flex-wrap gap-2">
           <div>

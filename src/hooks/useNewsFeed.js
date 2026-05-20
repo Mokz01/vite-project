@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 const CACHE_KEY = "pss_news_cache";
-const CACHE_TTL = 1000 * 60 * 60; // 1 hour
+const CACHE_TTL = 1000 * 60 * 60;
 
 function mapArticle(article, index) {
   return {
@@ -36,7 +36,6 @@ export function useNewsFeed() {
           throw new Error("Missing VITE_GNEWS_API_KEY in .env");
         }
 
-        // Try cache first
         const cached = localStorage.getItem(CACHE_KEY);
         if (cached) {
           const { timestamp, data } = JSON.parse(cached);
@@ -47,7 +46,6 @@ export function useNewsFeed() {
           }
         }
 
-        // GNews API — works from the browser, no CORS issues
         const url = `https://gnews.io/api/v4/search?q=trade+OR+supply+OR+oil+OR+conflict&lang=en&max=6&apikey=${apiKey}`;
 
         const response = await fetch(url);
